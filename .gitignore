@@ -1,3 +1,5 @@
 node_modules/
 config/chains/development.json
 TODO
+dist/
+generated/
