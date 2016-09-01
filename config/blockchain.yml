@@ -1,4 +1,5 @@
 development:
+  whisper: true
   rpc_host: localhost
   rpc_port: 8101
   rpc_whitelist: "*"
@@ -14,6 +15,7 @@ development:
     init: true
     password: config/password
 staging:
+  whisper: true
   testnet: true
   rpc_host: localhost
   rpc_port: 8101
@@ -26,6 +28,7 @@ staging:
     init: false
     address:
 production:
+  whisper: true
   rpc_host: localhost
   rpc_port: 8101
   rpc_whitelist: "*"

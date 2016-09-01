@@ -1,3 +1,9 @@
+//contract Token {
+//  function transfer( address to, uint value) returns (bool ok);
+//  function transferFrom( address from, address to, uint value) returns (bool ok);
+//  function approve(address spender, uint value) returns (bool ok);
+//}
+
 contract Deployer {
   mapping (bytes32 => bool) public deployed;
   mapping (uint => bytes32) public registeredHash;
