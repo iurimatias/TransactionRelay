@@ -4,4 +4,6 @@ development:
     gas_price: 10000000000000
     args: 
       - 10000
+  SimpleStorageInterface:
+    deploy: false
 staging:

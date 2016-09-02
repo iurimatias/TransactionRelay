@@ -7,8 +7,40 @@
 contract Deployer {
   mapping (bytes32 => bool) public deployed;
   mapping (uint => bytes32) public registeredHash;
+  event Deployed(address indexed from, address indexed deployedBy, address deployedAddress, uint fee);
 
   function Deployer() {
+  }
+
+  function verifySignature(address from, uint num, bytes32 code) constant returns (bool result) {
+    bytes32 expectedSignatureHash;
+    expectedSignatureHash = sha3(from, num);
+
+    result = (expectedSignatureHash == code);
+  }
+
+  // reminder sha3 need {encoding: 'hex'}
+  function confirmDeployment(address deployedAddress, address requesterAddress, bytes32 codeHash, uint tokenNum, bytes32 signatureHash, uint8 v, bytes32 r, bytes32 s) {
+    // check signature authorizes codeHash and tokenNum
+    // * recover address
+    // * recover signature
+    address signatureAddress;
+    signatureAddress = ecrecover(signatureHash, v, r, s);
+
+    if (signatureAddress != requesterAddress) throw;
+
+    // check code was deployed
+    bool wasDeployed;
+    wasDeployed = verifyDeployment(deployedAddress, codeHash);
+
+    if (!wasDeployed) throw;
+
+    // transfer tokens to sender
+    if (token.allowance(owner, this) < tokenNum) throw;
+
+    if (token.transferFrom(owner, deployedAddress, tokenNum)) {
+      Deployed(from, msg.sender, deployedAddress, codeHash, tokenNum);
+    }
   }
 
   function registerTransaction(uint id, bytes32 contractHash) {
@@ -17,7 +49,7 @@ contract Deployer {
     registeredHash[id] = contractHash;
   }
 
-  function verifyDeployment(uint id, address addr) {
+  function verifyDeployment(address addr, bytes32 expectedHash) constant returns (bool result) {
     bytes32 deployedHash;
 
     assembly {
@@ -29,9 +61,7 @@ contract Deployer {
       deployedHash := sha3(add(o_code, 0x20), size)
     }
 
-    if (deployedHash == registeredHash[id]) {
-      deployed[deployedHash] = true;
-    }
+    result = (deployedHash == expectedHash);
   }
 
 }
