@@ -28,7 +28,7 @@ var Deployer = {
 
       var codeHash = web3.sha3(payload.runtimeCode, {encoding: 'hex'});
 
-      var expectedAddress = VerifySignature.testECRecover(codeHash, Number(v)+27, "0x"+r, "0x"+s);
+      var expectedAddress = DeployRelay.recoverAddress(codeHash, Number(v)+27, "0x"+r, "0x"+s);
       if (expectedAddress != payload.from) {
         console.log("invalid signature");
         return;
