@@ -9,5 +9,5 @@
     "timestamp": "0x00",
     "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
     "extraData": "0x",
-    "gasLimit": "0x4c4b40"
+    "gasLimit": "0xffffff"
 }

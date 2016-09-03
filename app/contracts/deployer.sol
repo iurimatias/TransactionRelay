@@ -1,52 +1,62 @@
-//contract Token {
-//  function transfer( address to, uint value) returns (bool ok);
-//  function transferFrom( address from, address to, uint value) returns (bool ok);
-//  function approve(address spender, uint value) returns (bool ok);
-//}
+contract TokenInterface {
+  function transfer( address to, uint value) returns (bool ok);
+  function transferFrom( address from, address to, uint value) returns (bool ok);
+  function allowance(address owner, address spender) constant returns (uint _allowance);
+}
 
-contract Deployer {
-  mapping (bytes32 => bool) public deployed;
-  mapping (uint => bytes32) public registeredHash;
-  event Deployed(address indexed from, address indexed deployedBy, address deployedAddress, uint fee);
+contract DeployRelay {
+  struct Deployment {
+    address requester;
+    address deployer;
+    bytes32 codeHash;
+    address token;
+    uint fee;
+    bool deployed;
+  }
+  uint256 public numDeployments;
+  bool public something;
 
-  function Deployer() {
+  mapping (uint256 => Deployment) public deployments;
+
+  event NewDeployment(address indexed _deployer, bytes32 _codeHash, uint256 deploymentId);
+  event Deployed(address indexed from, address indexed deployedBy, address deployedAddress, bytes32 codeHash, uint fee);
+
+  function DeployRelay() {
   }
 
-  function verifySignature(address from, uint num, bytes32 code) constant returns (bool result) {
-    bytes32 expectedSignatureHash;
-    expectedSignatureHash = sha3(from, num);
-
-    result = (expectedSignatureHash == code);
-  }
-
-  // reminder sha3 need {encoding: 'hex'}
-  function confirmDeployment(address deployedAddress, address requesterAddress, bytes32 codeHash, uint tokenNum, bytes32 signatureHash, uint8 v, bytes32 r, bytes32 s) {
-    // check signature authorizes codeHash and tokenNum
-    // * recover address
-    // * recover signature
-    address signatureAddress;
-    signatureAddress = ecrecover(signatureHash, v, r, s);
-
+  function reserveDeployment(address requesterAddress, bytes32 codeHash, address tokenAddress, uint tokenNum, uint8 v, bytes32 r, bytes32 s) {
+    address signatureAddress = ecrecover(codeHash, v, r, s);
     if (signatureAddress != requesterAddress) throw;
 
-    // check code was deployed
-    bool wasDeployed;
-    wasDeployed = verifyDeployment(deployedAddress, codeHash);
+    uint256 deploymentId = ++numDeployments;
 
-    if (!wasDeployed) throw;
+    Deployment deployment = deployments[deploymentId];
+    deployment.requester = requesterAddress;
+    deployment.deployer  = msg.sender;
+    deployment.codeHash = codeHash;
+    deployment.token = tokenAddress;
+    deployment.fee = tokenNum;
 
-    // transfer tokens to sender
-    if (token.allowance(owner, this) < tokenNum) throw;
-
-    if (token.transferFrom(owner, deployedAddress, tokenNum)) {
-      Deployed(from, msg.sender, deployedAddress, codeHash, tokenNum);
-    }
+    NewDeployment(msg.sender, codeHash, deploymentId);
   }
 
-  function registerTransaction(uint id, bytes32 contractHash) {
-    if (deployed[contractHash]) throw;
-    deployed[contractHash] = false;
-    registeredHash[id] = contractHash;
+  function confirmDeployment(uint256 deploymentId, address deployedAddress, bytes32 codeHash) {
+    Deployment deployment = deployments[deploymentId];
+    //if (deployment.requester == 0x0) throw;
+    //if (deployment.deployed) throw;
+
+    //if (deployment.codeHash != codeHash) throw;
+    //if (!verifyDeployment(deployedAddress, codeHash)) throw;
+
+    TokenInterface token = TokenInterface(deployment.token);
+    // TODO: replace my msg.sender
+    if (token.allowance(deployment.requester, this) < deployment.fee) throw;
+
+    // TODO: replace my msg.sender
+    if (token.transferFrom(deployment.requester, this, deployment.fee)) {
+      deployment.deployed = true;
+      Deployed(deployment.requester, msg.sender, deployedAddress, codeHash, deployment.fee);
+    }
   }
 
   function verifyDeployment(address addr, bytes32 expectedHash) constant returns (bool result) {
@@ -62,6 +72,13 @@ contract Deployer {
     }
 
     result = (deployedHash == expectedHash);
+  }
+
+  function verifySignature(address from, uint num, bytes32 code) constant returns (bool result) {
+    bytes32 expectedSignatureHash;
+    expectedSignatureHash = sha3(from, num);
+
+    result = (expectedSignatureHash == code);
   }
 
 }

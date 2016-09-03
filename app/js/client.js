@@ -1,24 +1,27 @@
 var Client = {
-  requestDeplyoment: function(fromAddress, code, abi) {
-    var payload = [];
 
-    var signatureParams = [];
-    signatureParams.push(web3.eth.accounts[0]);
-    signatureParams.push(123); // replace with compiled code hash
-    signatureParams = web3.sha3(signatureParams.join(','));
+  requestDeplyoment: function(fromAddress, code, runtimeCode, abi) {
+    var codeHash  = web3.sha3(runtimeCode, {encoding: 'hex'});
+    var signature = web3.eth.sign(fromAddress, codeHash);
 
-    var signature = web3.eth.sign(web3.eth.accounts[0], signatureParams);
+    var payload = {
+      version: '0.0.1',
+      from: fromAddress,
+      signature: signature,
+      token: Token.address,
+      tokenNum: 100,
+      compiledCode: code,
+      runtimeCode: runtimeCode,
+      abi: abi
+    };
 
-    payload.push(web3.eth.accounts[0]);
-    payload.push(signature);
-    payload.push(100); // token price
-    payload.push(code); // token price
-    payload.push(abi); // token price
-
-    this.sendMsg(payload.join("|||"));
+    this.sendMsg(JSON.stringify(payload));
   },
 
   sendMsg: function(payload) {
+    var identity = web3.shh.newIdentity();
+    var topic = 'deployer01';
+
     var message = {
       from: identity,
       topics: [web3.fromAscii(topic)],
@@ -30,4 +33,5 @@ var Client = {
     web3.shh.post(message);
     console.log('sent!');
   }
+
 };

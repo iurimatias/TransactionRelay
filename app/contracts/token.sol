@@ -50,6 +50,7 @@ contract Token {
     return true;
   }
   function approve(address spender, uint value) returns (bool ok) {
+    // TODO: should increase instead
     _approvals[msg.sender][spender] = value;
     Approval( msg.sender, spender, value );
     return true;
