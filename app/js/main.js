@@ -14,4 +14,5 @@ $(document).ready(function() {
 
   Deployer.listenToRequests();
   Deployer.listenToDeployments();
+  Deployer.listenToReservations();
 });

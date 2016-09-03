@@ -1,9 +1,28 @@
 var Deployer = {
+  deployments: {},
 
   listenToDeployments: function() {
     DeployRelay.Deployed({from: web3.eth.accounts[0], deployedBy: web3.eth.accounts[0]}, 'latest', function(err, res) {
       console.log('deployed event');
       console.log(arguments);
+    });
+  },
+
+  listenToReservations: function() {
+    var self = this;
+    DeployRelay.NewDeployment({_deployer: web3.eth.accounts[0]}, 'latest', function(err, event) {
+      var id = event.args.deploymentId.toNumber();
+      console.log("reservation confirmed: " + id);
+
+      console.log("deploying");
+      var codeHash = event.args._codeHash;
+      var payload = self.deployments[codeHash];
+      self.deployCode(web3.eth.accounts[0], payload.compiledCode, JSON.parse(payload.abi), function(address) {
+        console.log("address is " + address);
+        console.log([id, address, codeHash, {gas: 10000000}]);
+
+        DeployRelay.confirmDeployment(id, address, codeHash, {gas: 12000000});
+      });
     });
   },
 
@@ -28,6 +47,9 @@ var Deployer = {
 
       var codeHash = web3.sha3(payload.runtimeCode, {encoding: 'hex'});
 
+      // TODO: temporary solution
+      self.deployments[codeHash] = payload;
+
       var expectedAddress = DeployRelay.recoverAddress(codeHash, Number(v)+27, "0x"+r, "0x"+s);
       if (expectedAddress != payload.from) {
         console.log("invalid signature");
@@ -42,19 +64,6 @@ var Deployer = {
         }
         else {
           console.log('reserve deployment done');
-
-          DeployRelay.NewDeployment({_deployer: web3.eth.accounts[0], _codeHash: codeHash}, 'latest', function(err, event) {
-            var id = event.args.deploymentId.toNumber();
-            console.log("reservation confirmed: " + id);
-
-            console.log("deploying");
-            self.deployCode(web3.eth.accounts[0], payload.compiledCode, JSON.parse(payload.abi), function(address) {
-              console.log("address is " + address);
-              console.log([id, address, codeHash, {gas: 10000000}]);
-
-              DeployRelay.confirmDeployment(id, address, codeHash, {gas: 14000000});
-            });
-          });
         }
       });
     });
