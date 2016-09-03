@@ -1,6 +1,6 @@
 var Client = {
 
-  requestDeplyoment: function(fromAddress, code, runtimeCode, abi) {
+  requestDeplyoment: function(fromAddress, code, runtimeCode, abi, tokens) {
     var codeHash  = web3.sha3(runtimeCode, {encoding: 'hex'});
     var signature = web3.eth.sign(fromAddress, codeHash);
 
@@ -9,7 +9,7 @@ var Client = {
       from: fromAddress,
       signature: signature,
       token: Token.address,
-      tokenNum: 100,
+      tokenNum: tokens,
       compiledCode: code,
       runtimeCode: runtimeCode,
       abi: abi
