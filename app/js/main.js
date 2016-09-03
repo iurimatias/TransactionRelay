@@ -7,7 +7,7 @@ $(document).ready(function() {
     var code = $(".code").val();
     var runtimeCode = $(".runtime").val();
     var abi =  $(".abi").val();
-    var tokens =  $(".abi").val();
+    var tokens =  $(".tokens").val();
 
     Client.requestDeplyoment(web3.eth.accounts[0], code, runtimeCode, abi, Number(tokens));
   });

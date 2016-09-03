@@ -42,11 +42,11 @@ contract DeployRelay {
 
   function confirmDeployment(uint256 deploymentId, address deployedAddress, bytes32 codeHash) {
     Deployment deployment = deployments[deploymentId];
-    //if (deployment.requester == 0x0) throw;
-    //if (deployment.deployed) throw;
+    if (deployment.requester == 0x0) throw;
+    if (deployment.deployed) throw;
 
-    //if (deployment.codeHash != codeHash) throw;
-    //if (!verifyDeployment(deployedAddress, codeHash)) throw;
+    if (deployment.codeHash != codeHash) throw;
+    if (!verifyDeployment(deployedAddress, codeHash)) throw;
 
     TokenInterface token = TokenInterface(deployment.token);
     // TODO: replace my msg.sender
