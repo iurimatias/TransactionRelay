@@ -25,6 +25,7 @@ contract DeployRelay {
   }
 
   function reserveDeployment(address requesterAddress, bytes32 codeHash, address tokenAddress, uint tokenNum, uint8 v, bytes32 r, bytes32 s) {
+    // TODO: change signature to include token address and amount
     address signatureAddress = ecrecover(codeHash, v, r, s);
     if (signatureAddress != requesterAddress) throw;
 
