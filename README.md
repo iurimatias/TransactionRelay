@@ -17,7 +17,7 @@ Possible Applications
 ======
 
 * Contracts and transactions can be paid in different currencies that a user might find more convenient.
-* 'pay-to-play' used to be the only model possible in Ethereum, in this model the issuer of the transaction needs to be able to own ether to pay for the interaction, TransactionRelay enalbes 3rd parties to take in the fee cost by issuing tokens to registered addresses. This could be usefull for application where the developer doesn't expect the user to own ether easily to pay for the transactions to interact with a specific dapp. It could also be used for controlled interactions e.g giving a use 10 free roulette spins, or accepting x free posts submissions per day for a registered user in a forum.
+* 'pay-to-play' used to be the only model possible in Ethereum, in this model the issuer of the transaction needs to be able to own ether to pay for the interaction, TransactionRelay enalbes 3rd parties to take in the fee cost by issuing tokens to registered addresses. This could be usefull for application where the developer doesn't expect the user to own ether easily to pay for the transactions to interact with a specific dapp or contract. It could also be used for controlled interactions e.g giving a use 10 free roulette spins, or accepting x free posts submissions per day for a registered user in a forum.
 * Previously a blocker for some altcoins to migrate to ethereum as tokens was that their transactions would need to be paid in Ether. TransactionRelay enables their transactions to be paid 'natively'.
 
 To do next

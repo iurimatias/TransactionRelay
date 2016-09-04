@@ -1,24 +1,42 @@
 <html>
   <head>
-    <title>Embark</title>
+    <title>Transaction Relay</title>
     <link rel="stylesheet" href="css/app.min.css">
     <script src="js/app.min.js"></script>
   </head>
-  <body>
-    requester
-    deployer
-    contract
-    tokens
-    <strong>contract code</strong>
-    <textarea class="code">6060604052604051602080607d83395060806040525160008190555060568060276000396000f3606060405260e060020a60003504632a1afcd98114602e57806360fe47b11460365780636d4ce63c146040575b005b604460005481565b600435600055602c565b6000545b60408051918252519081900360200190f3</textarea>
-    <strong>runtime code</strong>
-    <textarea class="runtime">606060405260e060020a60003504632a1afcd98114602e57806360fe47b11460365780636d4ce63c146040575b005b604460005481565b600435600055602c565b6000545b60408051918252519081900360200190f3</textarea>
-    <strong>abi</strong>
-    <textarea class="abi">[{"constant":true,"inputs":[],"name":"storedData","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"x","type":"uint256"}],"name":"set","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"get","outputs":[{"name":"retVal","type":"uint256"}],"type":"function"},{"inputs":[{"name":"initialValue","type":"uint256"}],"type":"constructor"}]</textarea>
-    <strong>token address</strong>
-    <input type="text" class="tokenAddress" value=""></input>
-    <strong>tokens to pay</strong>
-    <input type="text" class="tokens" value="100"></input>
-    <button class="submitCode">submit contract</button>
+  <body class="container">
+    <h3>Transaction Relay</h3>
+    <h4>Deploy</h4>
+
+    <div class="form-group form-inline">
+      <strong>contract code</strong>
+      <textarea class="code form-control">6060604052604051602080607d83395060806040525160008190555060568060276000396000f3606060405260e060020a60003504632a1afcd98114602e57806360fe47b11460365780636d4ce63c146040575b005b604460005481565b600435600055602c565b6000545b60408051918252519081900360200190f3</textarea>
+    </div>
+
+    <div class="form-group form-inline">
+      <strong>runtime code</strong>
+      <textarea class="runtime form-control">606060405260e060020a60003504632a1afcd98114602e57806360fe47b11460365780636d4ce63c146040575b005b604460005481565b600435600055602c565b6000545b60408051918252519081900360200190f3</textarea>
+    </div>
+
+    <div class="form-group form-inline">
+      <strong>abi</strong>
+      <textarea class="abi form-control">[{"constant":true,"inputs":[],"name":"storedData","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"x","type":"uint256"}],"name":"set","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"get","outputs":[{"name":"retVal","type":"uint256"}],"type":"function"},{"inputs":[{"name":"initialValue","type":"uint256"}],"type":"constructor"}]</textarea>
+    </div>
+
+    <div class="row">
+      <div class="form-group form-inline col-md-8">
+        <strong>token address</strong>
+        <input type="text" class="tokenAddress form-control" value=""></input>
+      </div>
+
+      <div class="form-group form-inline col-md-4">
+        <strong>tokens to pay</strong>
+        <input type="text" class="tokens form-control" value="100"></input>
+      </div>
+    </div>
+
+    <div class="row form-group form-inline col-md-4">
+      <button class="submitCode btn btn-primary">Request Deployment</button>
+    </div>
   </body>
 </html>

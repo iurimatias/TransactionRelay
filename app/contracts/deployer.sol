@@ -49,11 +49,9 @@ contract DeployRelay {
     if (!verifyDeployment(deployedAddress, codeHash)) throw;
 
     TokenInterface token = TokenInterface(deployment.token);
-    // TODO: replace my msg.sender
-    if (token.allowance(deployment.requester, this) < deployment.fee) throw;
+    if (token.allowance(deployment.requester, msg.sender) < deployment.fee) throw;
 
-    // TODO: replace my msg.sender
-    if (token.transferFrom(deployment.requester, this, deployment.fee)) {
+    if (token.transferFrom(deployment.requester, msg.sender, deployment.fee)) {
       deployment.deployed = true;
       Deployed(deployment.requester, msg.sender, deployedAddress, codeHash, deployment.fee);
     }
