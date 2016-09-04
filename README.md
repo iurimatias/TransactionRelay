@@ -23,10 +23,9 @@ Possible Applications
 Limitations
 ======
 
-Since the relayer is the done doing the transaction, then msg.sender will see the address of the relayer not the issuer. It's possible to put a signature in the transaction itself but a contract would need to know how to deal with this.
+Since the relayer is the one doing the transaction, then the contract will see msg.sender as the address of the relayer not the issuer. It's possible to put a signature in the transaction itself but a contract would need to know how to deal with this. Another alternative is to deploy a proxy contract A that has permissions to interact with another contract B. contract A can verify the signature and then interact with contract B.
 
 To do next
 ======
-* Implement a market mechanism of the tokens<->ether rate
 * Improve the signature process to prevent some potential attack vectors
-
+* Implement a market mechanism of the tokens<->ether rate
