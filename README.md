@@ -1,6 +1,8 @@
 Transaction Relay
 ======
 
+[![Join the chat at https://gitter.im/iurimatias/TransactionRelay](https://badges.gitter.im/iurimatias/TransactionRelay.svg)](https://gitter.im/iurimatias/TransactionRelay?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Join the chat at https://gitter.im/iurimatias/transactionrelay](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/iurimatias/transactionrelay?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Transaction Relay enables transaction fees of Ethereum contracts and transactions to be paid by any Currency (EIP20 compatible).
