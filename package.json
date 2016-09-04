@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Iuri Matias <iuri.matias@gmail.com>",
+  "license": "apache",
   "homepage": "",
   "devDependencies": {
     "embark-framework": "^1.2.0",
