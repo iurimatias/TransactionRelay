@@ -1,0 +1,20 @@
+{
+  "default": {
+    "gas": "auto",
+    "contracts": {
+      "TokenInterface": {
+        "deploy": false
+      },
+      "Token": {
+        "args": [
+          100000
+        ]
+      },
+      "SimpleStorageInterface": {
+        "deploy": false
+      },
+      "DeployRelay": {
+      }
+    }
+  }
+}
