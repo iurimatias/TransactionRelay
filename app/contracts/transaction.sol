@@ -1,3 +1,4 @@
+pragma solidity ^0.4.2;
 contract SimpleStorageInterface {
   uint public storedData;
   function set(uint x);
