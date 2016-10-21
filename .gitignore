@@ -1,5 +1,5 @@
+.embark/
 node_modules/
-config/chains/development.json
-TODO
 dist/
-generated/
+config/production/password
+TODO

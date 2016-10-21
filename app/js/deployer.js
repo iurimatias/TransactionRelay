@@ -2,21 +2,23 @@ var Deployer = {
   deployments: {},
 
   listenToDeployments: function() {
-    DeployRelay.Deployed({from: web3.eth.accounts[0], deployedBy: web3.eth.accounts[0]}, 'latest', function(err, res) {
+    DeployRelay.Deployed({from: web3.eth.accounts[0], deployedBy: web3.eth.accounts[0]}, 'latest').then(function(result) {
       console.log('deployed event');
-      console.log(arguments);
+      console.log(result);
     });
   },
 
   listenToReservations: function() {
     var self = this;
-    DeployRelay.NewDeployment({_deployer: web3.eth.accounts[0]}, 'latest', function(err, event) {
+    DeployRelay.NewDeployment({_deployer: web3.eth.accounts[0]}, 'latest').then(function(event) {
       var id = event.args.deploymentId.toNumber();
       console.log("reservation confirmed: " + id);
 
       console.log("deploying");
       var codeHash = event.args._codeHash;
       var payload = self.deployments[codeHash];
+      // TODO: can be replaced with EmbarkJS deploy?
+
       self.deployCode(web3.eth.accounts[0], payload.compiledCode, JSON.parse(payload.abi), function(address) {
         console.log("address is " + address);
         console.log([id, address, codeHash, {gas: 10000000}]);
@@ -57,14 +59,11 @@ var Deployer = {
       }
       console.log("confirmed address");
 
-      DeployRelay.reserveDeployment(web3.eth.accounts[0], codeHash, payload.token, payload.tokenNum, Number(v)+27, "0x" + r, "0x" + s, {gas: 10000000}, function(err, result) {
-        if (err) {
-          alert("error: coudln't reserve deployment");
-          console.log(err);
-        }
-        else {
+      DeployRelay.reserveDeployment(web3.eth.accounts[0], codeHash, payload.token, payload.tokenNum, Number(v)+27, "0x" + r, "0x" + s, {gas: 10000000}).then(function(result) {
           console.log('reserve deployment done');
-        }
+      }).catch(function(err) {
+        alert("error: coudln't reserve deployment");
+        console.log(err);
       });
     });
   },
