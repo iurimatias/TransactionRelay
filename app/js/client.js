@@ -15,7 +15,6 @@ var Client = {
       abi: abi
     };
 
-    //this.sendMsg(JSON.stringify(payload));
     EmbarkJS.Messages.sendMessage({topic: 'deployer01', data: payload, ttl: 100, priority: 1000});
   }
 

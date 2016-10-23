@@ -17,13 +17,13 @@ var Deployer = {
       console.log("deploying");
       var codeHash = event.args._codeHash;
       var payload = self.deployments[codeHash];
-      // TODO: can be replaced with EmbarkJS deploy?
 
-      self.deployCode(web3.eth.accounts[0], payload.compiledCode, JSON.parse(payload.abi), function(address) {
-        console.log("address is " + address);
-        console.log([id, address, codeHash, {gas: 1000000}]);
+      (new EmbarkJS.Contract({code: payload.compiledCode, abi: JSON.parse(payload.abi)})).deploy().then(function(deployedContract) {
+        console.log("address is " + deployedContract.address);
+        console.log([id, deployedContract.address, codeHash, {gas: 1200000}]);
+        window.deployedContract = deployedContract;
 
-        DeployRelay.confirmDeployment(id, address, codeHash, {gas: 1200000});
+        DeployRelay.confirmDeployment(id, deployedContract.address, codeHash, {gas: 1200000});
       });
     });
   },
@@ -68,33 +68,5 @@ var Deployer = {
       });
     });
   },
-
-  deployCode: function(from, code, abi, cb) {
-    console.log(arguments);
-    var self = this;
-    var contractParams;
-
-    contractParams = []; // no args supported for now
-
-    contractParams.push({
-      from: from,
-      data: code,
-      gas: 1200000
-    });
-
-    var contractObject = web3.eth.contract(abi);
-
-    contractParams.push(function(err, transaction) {
-      console.log(arguments);
-      if (err) {
-        console.log("error");
-      } else if (transaction.address !== undefined) {
-        console.log("address contract: " + transaction.address);
-        cb(transaction.address);
-      }
-    });
-
-    contractObject["new"].apply(contractObject, contractParams);
-  }
 
 };
