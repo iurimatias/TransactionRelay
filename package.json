@@ -10,7 +10,7 @@
   "license": "apache",
   "homepage": "",
   "devDependencies": {
-    "embark": "iurimatias/embark-framework#solc040",
+    "embark": "iurimatias/embark-framework#develop",
     "mocha": "^2.2.5"
   }
 }
