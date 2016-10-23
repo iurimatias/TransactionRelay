@@ -2,26 +2,28 @@ var Deployer = {
   deployments: {},
 
   listenToDeployments: function() {
-    DeployRelay.Deployed({from: web3.eth.accounts[0], deployedBy: web3.eth.accounts[0]}, 'latest', function(err, res) {
+    DeployRelay.Deployed({from: web3.eth.accounts[0], deployedBy: web3.eth.accounts[0]}, 'latest').then(function(result) {
       console.log('deployed event');
-      console.log(arguments);
+      console.log(result);
     });
   },
 
   listenToReservations: function() {
     var self = this;
-    DeployRelay.NewDeployment({_deployer: web3.eth.accounts[0]}, 'latest', function(err, event) {
+    DeployRelay.NewDeployment({_deployer: web3.eth.accounts[0]}, 'latest').then(function(event) {
       var id = event.args.deploymentId.toNumber();
       console.log("reservation confirmed: " + id);
 
       console.log("deploying");
       var codeHash = event.args._codeHash;
       var payload = self.deployments[codeHash];
-      self.deployCode(web3.eth.accounts[0], payload.compiledCode, JSON.parse(payload.abi), function(address) {
-        console.log("address is " + address);
-        console.log([id, address, codeHash, {gas: 10000000}]);
 
-        DeployRelay.confirmDeployment(id, address, codeHash, {gas: 12000000});
+      (new EmbarkJS.Contract({code: payload.compiledCode, abi: JSON.parse(payload.abi)})).deploy().then(function(deployedContract) {
+        console.log("address is " + deployedContract.address);
+        console.log([id, deployedContract.address, codeHash, {gas: 1200000}]);
+        window.deployedContract = deployedContract;
+
+        DeployRelay.confirmDeployment(id, deployedContract.address, codeHash, {gas: 1200000});
       });
     });
   },
@@ -50,51 +52,21 @@ var Deployer = {
       // TODO: temporary solution
       self.deployments[codeHash] = payload;
 
-      var expectedAddress = DeployRelay.recoverAddress(codeHash, Number(v)+27, "0x"+r, "0x"+s);
-      if (expectedAddress != payload.from) {
-        console.log("invalid signature");
-        return;
-      }
-      console.log("confirmed address");
+      DeployRelay.recoverAddress(codeHash, Number(v)+27, "0x"+r, "0x"+s).then(function(expectedAddress) {
+        if (expectedAddress != payload.from) {
+          console.log("invalid signature");
+          return;
+        }
+        console.log("confirmed address");
 
-      DeployRelay.reserveDeployment(web3.eth.accounts[0], codeHash, payload.token, payload.tokenNum, Number(v)+27, "0x" + r, "0x" + s, {gas: 10000000}, function(err, result) {
-        if (err) {
+        DeployRelay.reserveDeployment(web3.eth.accounts[0], codeHash, payload.token, payload.tokenNum, Number(v)+27, "0x" + r, "0x" + s, {gas: 1000000}).then(function(result) {
+          console.log('reserve deployment done');
+        }).catch(function(err) {
           alert("error: coudln't reserve deployment");
           console.log(err);
-        }
-        else {
-          console.log('reserve deployment done');
-        }
+        });
       });
     });
   },
-
-  deployCode: function(from, code, abi, cb) {
-    console.log(arguments);
-    var self = this;
-    var contractParams;
-
-    contractParams = []; // no args supported for now
-
-    contractParams.push({
-      from: from,
-      data: code,
-      gas: 12000000
-    });
-
-    var contractObject = web3.eth.contract(abi);
-
-    contractParams.push(function(err, transaction) {
-      console.log(arguments);
-      if (err) {
-        console.log("error");
-      } else if (transaction.address !== undefined) {
-        console.log("address contract: " + transaction.address);
-        cb(transaction.address);
-      }
-    });
-
-    contractObject["new"].apply(contractObject, contractParams);
-  }
 
 };

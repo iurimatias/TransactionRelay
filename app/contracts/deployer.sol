@@ -1,3 +1,5 @@
+pragma solidity ^0.4.2;
+
 contract TokenInterface {
   function transfer( address to, uint value) returns (bool ok);
   function transferFrom( address from, address to, uint value) returns (bool ok);

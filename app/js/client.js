@@ -15,23 +15,7 @@ var Client = {
       abi: abi
     };
 
-    this.sendMsg(JSON.stringify(payload));
-  },
-
-  sendMsg: function(payload) {
-    var identity = web3.shh.newIdentity();
-    var topic = 'deployer01';
-
-    var message = {
-      from: identity,
-      topics: [web3.fromAscii(topic)],
-      payload: web3.fromAscii(payload),
-      ttl: 100,
-      priority: 1000
-    };
-
-    web3.shh.post(message);
-    console.log('sent!');
+    EmbarkJS.Messages.sendMessage({topic: 'deployer01', data: payload, ttl: 100, priority: 1000});
   }
 
 };
