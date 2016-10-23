@@ -21,9 +21,9 @@ var Deployer = {
 
       self.deployCode(web3.eth.accounts[0], payload.compiledCode, JSON.parse(payload.abi), function(address) {
         console.log("address is " + address);
-        console.log([id, address, codeHash, {gas: 10000000}]);
+        console.log([id, address, codeHash, {gas: 1000000}]);
 
-        DeployRelay.confirmDeployment(id, address, codeHash, {gas: 12000000});
+        DeployRelay.confirmDeployment(id, address, codeHash, {gas: 1200000});
       });
     });
   },
@@ -52,18 +52,19 @@ var Deployer = {
       // TODO: temporary solution
       self.deployments[codeHash] = payload;
 
-      var expectedAddress = DeployRelay.recoverAddress(codeHash, Number(v)+27, "0x"+r, "0x"+s);
-      if (expectedAddress != payload.from) {
-        console.log("invalid signature");
-        return;
-      }
-      console.log("confirmed address");
+      DeployRelay.recoverAddress(codeHash, Number(v)+27, "0x"+r, "0x"+s).then(function(expectedAddress) {
+        if (expectedAddress != payload.from) {
+          console.log("invalid signature");
+          return;
+        }
+        console.log("confirmed address");
 
-      DeployRelay.reserveDeployment(web3.eth.accounts[0], codeHash, payload.token, payload.tokenNum, Number(v)+27, "0x" + r, "0x" + s, {gas: 10000000}).then(function(result) {
+        DeployRelay.reserveDeployment(web3.eth.accounts[0], codeHash, payload.token, payload.tokenNum, Number(v)+27, "0x" + r, "0x" + s, {gas: 1000000}).then(function(result) {
           console.log('reserve deployment done');
-      }).catch(function(err) {
-        alert("error: coudln't reserve deployment");
-        console.log(err);
+        }).catch(function(err) {
+          alert("error: coudln't reserve deployment");
+          console.log(err);
+        });
       });
     });
   },
@@ -78,7 +79,7 @@ var Deployer = {
     contractParams.push({
       from: from,
       data: code,
-      gas: 12000000
+      gas: 1200000
     });
 
     var contractObject = web3.eth.contract(abi);
